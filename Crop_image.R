@@ -36,7 +36,7 @@ for (n in 1:length(unique(selectedImage_table$lc17id))){
 
 #Crop image 400x400 pixel (Batch)
 for (i in 1:nrow(selectedImage_table)){
-  filtertable2 <- subset(selectedImage_table,selectedImage_table$id_new == n)
+  filtertable2 <- subset(selectedImage_table,selectedImage_table$id_new == i)
   image_name <- paste0("E:/R+/Crowdsourcing/crop_image/", filtertable2$filename)
   if(file.exists(image_name)){
     image1 <- image_read(image_name)
@@ -47,6 +47,8 @@ for (i in 1:nrow(selectedImage_table)){
     export <- image_write(imgtext1, paste0("E:/R+/Crowdsourcing/crop_image/", unique(filtertable2$pilename), "/", unique(filtertable2$lc17class),"/cropped_",filtertable2$filename))
   }
 }
+
+
 
 #Testing
 #image1 <- image_read("E:/R+/Crowdsourcing/test_magick/ff728ffb-f62c-f568-83d8-5ad74fa6a583_110_0_20180601_034337.jpg")
