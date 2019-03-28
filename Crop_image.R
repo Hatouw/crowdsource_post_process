@@ -48,6 +48,39 @@ for (i in 1:nrow(allimages_table)){
   }
 }
 
+#checking the match between the table and list of files
+  ##checking the match between table and raw images
+listimg <- list.files("E:/R+/Crowdsourcing/crop_image/")
+tbl_listimg <- data.frame(filename = listimg)
+allimages_table$match <- ifelse(is.na(match(allimages_table$filename, tbl_listimg$filename)), yes = "unmatched", no = "matched")
+write.table(allimages_table, file = "E:/R+/Crowdsourcing/crop_image/tbl_allimage.csv", row.names = FALSE, col.names = TRUE, sep = ",")
+
+  ##checking the match between table and cropped image
+listimg_exnf <- list.files("E:/R+/Crowdsourcing/crop_image/expertpile/Natural forest")
+tbl_listimg_exnf <- data.frame(filename = listimg_exnf, lclev2 = "Natural forest")
+listimg_exmtc <- list.files("E:/R+/Crowdsourcing/crop_image/expertpile/Managed tree crop")
+tbl_listimg_exmtc <- data.frame(filename = listimg_exmtc, lclev2 = "Managed tree crop")
+listimg_exntbs <- list.files("E:/R+/Crowdsourcing/crop_image/expertpile/Non tree based system")
+tbl_listimg_exntbs <- data.frame(filename = listimg_exntbs, lclev2 = "Non tree based system")
+listimg_exnv <- list.files("E:/R+/Crowdsourcing/crop_image/expertpile/Non vegetation")
+tbl_listimg_exnv <- data.frame(filename = listimg_exnv, lclev2 = "Non vegetation")
+
+listimg_ornf <- list.files("E:/R+/Crowdsourcing/crop_image/ordinarypile/Natural forest")
+tbl_listimg_ornf <- data.frame(filename = listimg_ornf, lclev2 = "Natural forest")
+listimg_ormtc <- list.files("E:/R+/Crowdsourcing/crop_image/ordinarypile/Managed tree crop")
+tbl_listimg_ormtc <- data.frame(filename = listimg_ormtc, lclev2 = "Managed tree crop")
+listimg_orntbs <- list.files("E:/R+/Crowdsourcing/crop_image/ordinarypile/Non tree based system")
+tbl_listimg_orntbs <- data.frame(filename = listimg_orntbs, lclev2 = "Non tree based system")
+listimg_ornv <- list.files("E:/R+/Crowdsourcing/crop_image/ordinarypile/Non vegetation")
+tbl_listimg_ornv <- data.frame(filename = listimg_ornv, lclev2 = "Non vegetation")
+
+tbl_cropimage <- rbind(tbl_listimg_exnf, tbl_listimg_exmtc,tbl_listimg_exntbs, tbl_listimg_exnv, tbl_listimg_ornf, tbl_listimg_ormtc, tbl_listimg_orntbs, tbl_listimg_ornv)
+tbl_cropimage$filename2 <- sub("cropped_", "", tbl_cropimage$filename)
+
+allimages_table$match <- ifelse(is.na(match(allimages_table$filename, tbl_cropimage$filename2)), yes = "unmatched", no = "matched")
+allimages_table$cropmatch <- NULL
+allimages_table$cropped_filename <- paste0("cropped_",allimages_table$filename)
+write.table(allimages_table, file = "E:/R+/Crowdsourcing/crop_image/tbl_allimage.csv", row.names = FALSE, col.names = TRUE, sep = ",")
 
 
 #Testing
