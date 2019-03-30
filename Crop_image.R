@@ -57,25 +57,37 @@ write.table(allimages_table, file = "E:/R+/Crowdsourcing/crop_image/tbl_allimage
 
   ##checking the match between table and cropped image
 listimg_exnf <- list.files("E:/R+/Crowdsourcing/crop_image/expertpile/Natural forest")
-tbl_listimg_exnf <- data.frame(filename = listimg_exnf, lclev2 = "Natural forest")
+tbl_listimg_exnf <- data.frame(filename = listimg_exnf, lclev2 = "Natural forest", pilename = "expertpile")
 listimg_exmtc <- list.files("E:/R+/Crowdsourcing/crop_image/expertpile/Managed tree crop")
-tbl_listimg_exmtc <- data.frame(filename = listimg_exmtc, lclev2 = "Managed tree crop")
+tbl_listimg_exmtc <- data.frame(filename = listimg_exmtc, lclev2 = "Managed tree crop", pilename = "expertpile")
 listimg_exntbs <- list.files("E:/R+/Crowdsourcing/crop_image/expertpile/Non tree based system")
-tbl_listimg_exntbs <- data.frame(filename = listimg_exntbs, lclev2 = "Non tree based system")
+tbl_listimg_exntbs <- data.frame(filename = listimg_exntbs, lclev2 = "Non tree based system", pilename = "expertpile")
 listimg_exnv <- list.files("E:/R+/Crowdsourcing/crop_image/expertpile/Non vegetation")
-tbl_listimg_exnv <- data.frame(filename = listimg_exnv, lclev2 = "Non vegetation")
+tbl_listimg_exnv <- data.frame(filename = listimg_exnv, lclev2 = "Non vegetation", pilename = "expertpile")
 
 listimg_ornf <- list.files("E:/R+/Crowdsourcing/crop_image/ordinarypile/Natural forest")
-tbl_listimg_ornf <- data.frame(filename = listimg_ornf, lclev2 = "Natural forest")
+tbl_listimg_ornf <- data.frame(filename = listimg_ornf, lclev2 = "Natural forest", pilename = "ordinarypile")
 listimg_ormtc <- list.files("E:/R+/Crowdsourcing/crop_image/ordinarypile/Managed tree crop")
-tbl_listimg_ormtc <- data.frame(filename = listimg_ormtc, lclev2 = "Managed tree crop")
+tbl_listimg_ormtc <- data.frame(filename = listimg_ormtc, lclev2 = "Managed tree crop", pilename = "ordinarypile")
 listimg_orntbs <- list.files("E:/R+/Crowdsourcing/crop_image/ordinarypile/Non tree based system")
-tbl_listimg_orntbs <- data.frame(filename = listimg_orntbs, lclev2 = "Non tree based system")
+tbl_listimg_orntbs <- data.frame(filename = listimg_orntbs, lclev2 = "Non tree based system", pilename = "ordinarypile")
 listimg_ornv <- list.files("E:/R+/Crowdsourcing/crop_image/ordinarypile/Non vegetation")
-tbl_listimg_ornv <- data.frame(filename = listimg_ornv, lclev2 = "Non vegetation")
+tbl_listimg_ornv <- data.frame(filename = listimg_ornv, lclev2 = "Non vegetation", pilename = "ordinarypile")
 
-tbl_cropimage <- rbind(tbl_listimg_exnf, tbl_listimg_exmtc,tbl_listimg_exntbs, tbl_listimg_exnv, tbl_listimg_ornf, tbl_listimg_ormtc, tbl_listimg_orntbs, tbl_listimg_ornv)
+listimg_gpsnf <- list.files("E:/R+/Crowdsourcing/crop_image/gpspile/Natural forest")
+tbl_listimg_gpsnf <- data.frame(filename = listimg_gpsnf, lclev2 = "Natural forest", pilename = "gpspile")
+listimg_gpsmtc <- list.files("E:/R+/Crowdsourcing/crop_image/gpspile/Managed tree crop")
+tbl_listimg_gpsmtc <- data.frame(filename = listimg_gpsmtc, lclev2 = "Managed tree crop", pilename = "gpspile")
+listimg_gpsntbs <- list.files("E:/R+/Crowdsourcing/crop_image/gpspile/Non tree based system")
+tbl_listimg_gpsntbs <- data.frame(filename = listimg_gpsntbs, lclev2 = "Non tree based system", pilename = "gpspile")
+listimg_gpsnv <- list.files("E:/R+/Crowdsourcing/crop_image/gpspile/Non vegetation")
+tbl_listimg_gpsnv <- data.frame(filename = listimg_gpsnv, lclev2 = "Non vegetation", pilename = "gpaspile")
+
+tbl_cropimage <- rbind(tbl_listimg_gpsnf, tbl_listimg_gpsmtc, tbl_listimg_gpsntbs, tbl_listimg_gpsnv,
+                       tbl_listimg_exnf, tbl_listimg_exmtc,tbl_listimg_exntbs, tbl_listimg_exnv,
+                       tbl_listimg_ornf, tbl_listimg_ormtc, tbl_listimg_orntbs, tbl_listimg_ornv)
 tbl_cropimage$filename2 <- sub("cropped_", "", tbl_cropimage$filename)
+write.table(tbl_cropimage, file = "E:/R+/Crowdsourcing/crop_image/tbl_cropimage.csv", row.names = FALSE, col.names = TRUE, sep = ",")
 
 allimages_table$match <- ifelse(is.na(match(allimages_table$filename, tbl_cropimage$filename2)), yes = "unmatched", no = "matched")
 allimages_table$cropmatch <- NULL
