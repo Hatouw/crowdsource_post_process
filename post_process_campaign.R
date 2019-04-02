@@ -20,9 +20,36 @@ tbl_campaign_type <- dbReadTable(con, "tbl_campaign_type")
 tbl_campaign <- dbReadTable(con, "tbl_campaign")
 tbl_campaign_game <- dbReadTable(con, "tbl_campaign_game")
 tbl_user_activity <- dbReadTable(con, "tbl_user_activity")
-tbl_institution <- dbRemoveTable(con, "tbl_institution")
+#tbl_institution <- dbRemoveTable(con, "tbl_institution") NoteAE: It gives error message all the time
 
-#export data from postgresql
+
+setwd("D:/1_Restore+/crowdsource_post_process")
+pile_ref <- tempfile(fileext = ".csv")
+dl <- drive_download(
+  as_id("1tMjwHJgSlHqkzSjAenY7bwbSF9rzrlbn"), path = pile_ref, overwrite = TRUE)
+pile_ref <- read.table(pile_ref, header=TRUE, sep=",")
+pile_ref <- subset(pile_ref, real_answer == "YES")
+tbldf_extradata <- tbl_df(tbl_extradata)
+tbldf_extradata <- merge(tbldf_extradata,pile_ref, by.x=c("latitude","longitude"), by.y=c("y","x"), all.x = TRUE, all.y = FALSE)
+tbldf_extradata$count <- 1
+tbldf_extradata_ref <- subset(tbldf_extradata, real_answer == "YES")
+
+pilah_data0 <- tbldf_extradata %>% group_by (userUid) %>% summarize (Total=sum(count))
+pilah_data1 <- tbldf_extradata_ref %>% group_by (userUid) %>% summarize (Total_ref=sum(count))
+pilah_data2 <- tbldf_extradata_ref %>% filter(userAnswer=="Yes") %>% 
+  filter(real_answer=="YES") %>% group_by(userUid) %>% summarise(Ref_true=sum(count))
+pilah_data3 <- tbldf_extradata_ref %>% filter(userAnswer=="No") %>% 
+  filter(real_answer=="YES") %>% group_by(userUid) %>% summarise(Ref_false=sum(count))
+pilah_data <- merge (pilah_data0, pilah_data1, by="userUid", all=TRUE)
+pilah_data <- merge (pilah_data, pilah_data2, by="userUid", all=TRUE)
+pilah_data <- merge (pilah_data, pilah_data3, by="userUid", all=TRUE)
+pilah_data[is.na(pilah_data)] <- 0
+pilah_data$correct <- (pilah_data$Ref_true/pilah_data$Total_ref)
+pilah_data$correct_norm <- ((pilah_data$Ref_true/pilah_data$Total_ref)*100)*(pilah_data$Total_ref/max(pilah_data$Total_ref))
+
+campaign_sum <- tbldf_extradata %>% group_by (pileId) %>% summarize (Amount=sum(count))
+
+#export data 
 write.table(tbl_extradata, file = "D:/Project/Restore+/Crowdsource_campaign/3_Result/post_process/tbl_extradata_picturepile.csv", row.names = FALSE, col.names = TRUE, sep = ",")
 write.table(tbl_news, file = "D:/Project/Restore+/Crowdsource_campaign/3_Result/post_process/tbl_news.csv", row.names = FALSE, col.names = TRUE, sep = ",")
 write.table(tbl_domisili, file = "D:/Project/Restore+/Crowdsource_campaign/3_Result/post_process/tbl_domisili.csv", row.names = FALSE, col.names = TRUE, sep = ",")
